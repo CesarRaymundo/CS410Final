@@ -366,11 +366,7 @@ public class Project {
 			System.err.println("ERROR: Failed to load MySQL database driver.");
 			System.err.println("  ClassNotFoundException: " + e.getMessage());
 		}
-//		try {
-//			conn = DriverManager.getConnection("jdbc:mysql://localhost:" + PORT + "/" + DBNAME + "?verifyServerCertificate=false&useSSL=true&serverTimezone=UTC", USER, PASSWD);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
+
 //		statement = conn.createStatement();
 //		String item_code;
 //		String description;
