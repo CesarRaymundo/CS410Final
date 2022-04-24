@@ -431,6 +431,6 @@ public class Project {
 //					+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
 //					+ "GetOrderDetails<order_id or % for all>");
 
-		}
 	}
+}
 
