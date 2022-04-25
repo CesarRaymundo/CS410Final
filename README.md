@@ -1,20 +1,40 @@
 # BSU-HU-CS-310-Final-Project
 
+
+## Setup
+
+We used intellij for this project. Project was made with SDK version 11. Edit configurations
+
+Set run on: username@onyx.boisestate.edu:22
+Build and run: java 11
+Main class: Project
+
+look through onyx from home directory: /opt/mysql/
+fetch jar: mysql-connector-java-8.0.27.jar
+Add jar to dependencies (ctrl-shift-alt+S)
+
+For Databases, we will use our own remote sandboxes on Onyx.
+Add MySQL>SSH> Use SSH tunnel > username@boisestate.edu:22 w/ password
+MySQL workbench 8.0 CE (community edition)
+
+Steps For Connectivity Between Java Program and Database
+- Import the Packages
+- Load the drivers using the forName() method 
+- Register the drivers using DriverManager 
+- Establish a connection using the Connection class object
+- Create a statement
+- Execute the query
+- CLose the connections
+
+
 ## To Compile
 
-`make`
+
 
 ## To Run
 
 `java Project <command> <arguments>`
 
-## List of Commands
 
-* CreateItem <item_code> <description> <price> <inventory_amount>
-* UpdateInventory <item_code> <inventory_amount>
-* DeleteItem <item_code>
-* GetItems <item_code or % for all>
-* CreateOrder <item_code> <quantity>
-* DeleteOrder <item_code>
-* GetOrders <item_code or % for all>
-* GetOrderDetails <order_id or % for all>
+
+## List of Commands
