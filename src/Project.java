@@ -422,7 +422,7 @@ public class Project {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		boolean DEBUG = true;
-		String DBNAME = "Final";
+		String DBNAME = "school";
 		String PASSWD = "password123";
 		int PORT = 50418;
 		String USER = "msandbox";
