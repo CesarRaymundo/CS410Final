@@ -4,26 +4,104 @@ import java.util.ArrayList;
 
 public class Project {
 
-//	public static Item createItem(String item_code, String description, double price, int inventory_amount)
-//			throws SQLException {
+	static Connection conn;
+
+	public static void createClass(String class_course, String class_name, String class_term, String class_section) {
+		PreparedStatement stmt;
+		ResultSet rs;
+
+		try {
+			stmt = conn.prepareStatement("insert into school.class values(?,?,?,?)");
+			stmt.setString(1, class_course);
+			stmt.setString(2, class_name);
+			stmt.setString(3, class_term);
+			stmt.setString(4, class_section);
+			int i = stmt.executeUpdate();
+			System.out.println(i + "records inserted");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+	}
+
+	public static void selectClass(String class_course, String class_name, String class_term, String class_section) {
+
+
+	}
+
+	public static void showClass(String class_course, String class_name, String class_term, String class_section) {
+
+
+	}
+
+	public static void showCatagories(String catagory_name) {
+
+	}
+
+	public static void addCatagories() {
+
+	}
+
+	public static void showAssignment() {
+
+	}
+
+	public static void addAssignment() {
+
+	}
+
+	public static void addStudentArg1(String user_name, int student_id, String last, String first) {
+
+	}
+	public static void addStudentArg2(String user_name, int student_id, String last, String first) {
+
+	}
+
+	public static void showStudents() {
+		//Show all students in the current class
+	}
+	public static void showStudentsString() {
+		//Show students with 'string' in their name or username (NOT case-sensitive)
+
+	}
+
+	public static void grade(String assignmentName, String userName, String grade) {
+		//if student already has a grade for that assignment -- replace it
+		//If number of points exceed assignment config cap, print a warning w/ number of points configed
+	}
+
+	public static void studentGrades(String username) {
+		//group by category
+		//subtotal for each category
+		//overall grade in class
+	}
+	public static void gradeBook(String user_name, int student_id, String first_name, String last_name, String grade){
+		//students with their total grades
+	}
+
+
+//	SQLException {
 //		Connection connection = null;
 //
-////		connection = MySqlDatabase.getDatabaseConnection();
-////		Statement sqlStatement = connection.createStatement();
+//		connection = MySqlDatabase.getDatabaseConnection();
+//		Statement sqlStatement = connection.createStatement();
 //
-////		String sql = String.format(
-////				"INSERT INTO items (item_code, description, price, inventory_amount) VALUES ('%s', '%s', %s, %s);",
-////				item_code, description, price, inventory_amount);
-////		sqlStatement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-////
-////		ResultSet resultSet = sqlStatement.getGeneratedKeys();
-////		resultSet.next();
-////
-////		int item_id = resultSet.getInt(1);
-////		connection.close();
-////
-////		return new Item(item_id, item_code, description, price, inventory_amount);
+//		String sql = String.format(
+//				"INSERT INTO items (item_code, description, price, inventory_amount) VALUES ('%s', '%s', %s, %s);",
+//				item_code, description, price, inventory_amount);
+//		sqlStatement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+//
+//		ResultSet resultSet = sqlStatement.getGeneratedKeys();
+//		resultSet.next();
+//
+//		int item_id = resultSet.getInt(1);
+//		connection.close();
+//
+//		return new Item(item_id, item_code, description, price, inventory_amount);
 //	}
+
+
 //
 //	public static List<Item> getItems(String item_code) throws SQLException {
 //		List<Item> items = new ArrayList<Item>();
@@ -350,7 +428,7 @@ public class Project {
 		String USER = "msandbox";
 
 		// Connection and statement vars.
-		Connection conn = null;
+//		Connection conn = null;
 		Statement statement = null;
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		try {
@@ -374,15 +452,15 @@ public class Project {
 //		int inventory_amount;
 //		int quantity;
 
-//		switch (args[0]) {
-//		case "CreateItem":
-//			item_code = args[1];
-//			description = args[2];
-//			price = Double.parseDouble(args[3]);
-//			inventory_amount = Integer.parseInt(args[4]);
-//			tryToCreateNewItem(item_code, description, price, inventory_amount);
-//			break;
-//
+		switch (args[0]) {
+			case "new-class":
+				String class_course = args[1];
+				String class_name = args[2];
+				String class_term = args[3];
+				String class_section = args[4];
+				createClass(class_course, class_name, class_term, class_section);
+				break;
+
 //		case "UpdateInventory":
 //			item_code = args[1];
 //			inventory_amount = Integer.parseInt(args[2]);
@@ -419,14 +497,15 @@ public class Project {
 //				tryToGetOrderDetails(Integer.parseInt(args[1]));
 //			}
 //			break;
-//		default:
-//			System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
-//					+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
-//					+ "UpdateInventory<item_code> < inventory_amount>," + "\n" + "DeleteItem<item_code>," + "\n"
-//					+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
-//					+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
-//					+ "GetOrderDetails<order_id or % for all>");
+			default:
+				System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
+						+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
+						+ "UpdateInventory<item_code> < inventory_amount>," + "\n" + "DeleteItem<item_code>," + "\n"
+						+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
+						+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
+						+ "GetOrderDetails<order_id or % for all>");
 
+		}
 	}
 }
 
