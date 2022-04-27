@@ -50,7 +50,7 @@ public static void createClass(String class_course, String class_name, String cl
 
 	}
 
-	public static void showCatagories(String catagory_name) {
+	public static void showCatagories() {
 
 	}
 
@@ -66,10 +66,10 @@ public static void createClass(String class_course, String class_name, String cl
 
 	}
 
-	public static void addStudentArg1(String user_name, int student_id, String last, String first) {
+	public static void addStudent_4(String user_name, int student_id, String last, String first) {
 
 	}
-	public static void addStudentArg2(String user_name, int student_id, String last, String first) {
+	public static void addStudent_1(String user_name) {
 
 	}
 
@@ -91,7 +91,7 @@ public static void createClass(String class_course, String class_name, String cl
 		//subtotal for each category
 		//overall grade in class
 	}
-	public static void gradeBook(String user_name, int student_id, String first_name, String last_name, String grade){
+	public static void gradeBook(){
 		//students with their total grades
 	}
 
@@ -491,8 +491,56 @@ public static void createClass(String class_course, String class_name, String cl
 					class_section = args[3];
 					selectClass_3(class_course,class_term,class_section);
 				}
-			break;
+				break;
 			case "show-catagories":
+				showCatagories();
+			case "add-catagories":
+
+				addCatagories();
+			case "add-category":
+				String name = args[1];
+				String weight = args[2];
+			case "show-assignment":
+				showAssignment();
+			case "add-assignment":
+				String category;
+				String description;
+				String points;
+			case "add-student":
+				String username = args[1];
+				if(args.length == 2){
+					addStudent_1(username);
+				}
+				if(args.length>2){
+					username = args[1];
+					int studentid = Integer.parseInt(args[2]);
+					String last = args[3];
+					String first = args[4];
+					addStudent_4(username, studentid, last, first);
+				}
+
+			case "show-students":
+				if(args.length == 1){
+					showStudents();
+				}
+				if(args.length >1){
+					String string = args[1];
+					showStudentsString();
+				}
+				break;
+			case "grade":
+				String assignmentname = args[1];
+				username = args[2];
+				String grade = args[3];
+				break;
+			case "student-grades":
+				username = args[1];
+				studentGrades(username);
+				break;
+			case "gradebook":
+				gradeBook();
+				break;
+
 
 
 //		case "UpdateInventory":
