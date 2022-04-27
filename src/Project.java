@@ -25,12 +25,15 @@ public class Project {
 
 	}
 
-	public static void selectClass(String class_course, String class_name, String class_term, String class_section) {
-
+	public static void selectClass_1(String class_course) {
 
 	}
 
-	public static void showClass(String class_course, String class_name, String class_term, String class_section) {
+	public static void selectClass_2(String class_course, String class_term) {
+
+
+	}
+	public static void selectClass_3(String class_course, String class_term, String class_section) {
 
 
 	}
@@ -455,11 +458,30 @@ public class Project {
 		switch (args[0]) {
 			case "new-class":
 				String class_course = args[1];
-				String class_name = args[2];
-				String class_term = args[3];
-				String class_section = args[4];
+				String class_term = args[2];
+				String class_section = args[3];
+				String class_name = args[4];
 				createClass(class_course, class_name, class_term, class_section);
 				break;
+			case "select-class":
+				if(args.length==2){
+					class_course = args[1];
+					selectClass_1(class_course);
+				}
+				if(args.length==3){
+					class_course = args[1];
+					class_term = args[2];
+					selectClass_2(class_course,class_term);
+				}
+				if(args.length==4){
+					class_course = args[1];
+					class_term = args[2];
+					class_section = args[3];
+					selectClass_3(class_course,class_term,class_section);
+				}
+			break;
+			case "show-catagories":
+
 
 //		case "UpdateInventory":
 //			item_code = args[1];
