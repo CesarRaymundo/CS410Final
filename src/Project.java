@@ -6,20 +6,38 @@ public class Project {
 
 	static Connection conn;
 
-	public static void createClass(String class_course, String class_name, String class_term, String class_section) {
-		PreparedStatement stmt;
-		ResultSet rs;
+
+public static void createClass(String class_course, String class_name, String class_term, String class_section) throws SQLException {
+	    PreparedStatement stmt;
+		conn.setAutoCommit(false);
 
 		try {
-			stmt = conn.prepareStatement("insert into school.class values(?,?,?,?)");
+			try {
+				stmt = conn.prepareStatement("insert into school.class values(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, class_course);
 			stmt.setString(2, class_name);
 			stmt.setString(3, class_term);
 			stmt.setString(4, class_section);
-			int i = stmt.executeUpdate();
-			System.out.println(i + "records inserted");
-		} catch (SQLException e) {
-			e.printStackTrace();
+			stmt.executeUpdate();
+				int class_id;
+
+				try(ResultSet rs = stmt.getGeneratedKeys()) {
+					if(rs.next()) {
+						class_id= rs.getInt(1);
+						System.out.println("Class course " + class_course + "Class name " + class_name +
+								"class term " + class_term + "class section " + class_section + "class id " + class_id);
+					} else {
+						System.err.println("Did not get any class id");
+					}
+				}
+			} catch (SQLException exception) {
+				exception.printStackTrace();
+			}
+		} catch(RuntimeException e) {
+			conn.rollback();
+			throw e;
+		} finally {
+			conn.setAutoCommit(true);
 		}
 
 
