@@ -24,23 +24,17 @@ public static void createClass(String class_course, String class_name, String cl
 				try(ResultSet rs = stmt.getGeneratedKeys()) {
 					if(rs.next()) {
 						class_id= rs.getInt(1);
-						System.out.println("Class course " + class_course + "Class name " + class_name +
-								"class term " + class_term + "class section " + class_section + "class id " + class_id);
+						System.out.println("class id " + class_id + "class course"+class_course);
 					} else {
 						System.err.println("Did not get any class id");
 					}
 				}
-			} catch (SQLException exception) {
-				exception.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch(RuntimeException e) {
-			conn.rollback();
-			throw e;
 		} finally {
 			conn.setAutoCommit(true);
 		}
-
-
 	}
 
 	public static void selectClass_1(String class_course) {
@@ -476,9 +470,9 @@ public static void createClass(String class_course, String class_name, String cl
 		switch (args[0]) {
 			case "new-class":
 				String class_course = args[1];
-				String class_term = args[2];
-				String class_section = args[3];
-				String class_name = args[4];
+				String class_name = args[2];
+				String class_term = args[3];
+				String class_section = args[4];
 				createClass(class_course, class_name, class_term, class_section);
 				break;
 			case "select-class":
