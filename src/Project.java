@@ -485,14 +485,18 @@ public static void createClass(String class_course, String class_name, String cl
 				break;
 			case "show-catagories":
 				showCatagories();
+				break;
 			case "add-catagories":
 
 				addCatagories();
+				break;
 			case "add-category":
 				String name = args[1];
 				String weight = args[2];
+				break;
 			case "show-assignment":
 				showAssignment();
+				break;
 			case "add-assignment":
 				name = args[1];
 				String category = args[2];
@@ -512,6 +516,7 @@ public static void createClass(String class_course, String class_name, String cl
 					String first = args[4];
 					addStudent_4(username, student_id, last, first);
 				}
+				break;
 
 			case "show-students":
 				if(args.length == 1){
