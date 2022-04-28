@@ -14,21 +14,12 @@ public static void createClass(String class_course, String class_name, String cl
 		try {
 			try {
 				stmt = conn.prepareStatement("insert into school.class values(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, class_course);
-			stmt.setString(2, class_name);
-			stmt.setString(3, class_term);
-			stmt.setString(4, class_section);
-			stmt.executeUpdate();
-				int class_id;
+				stmt.setString(1, class_course);
+				stmt.setString(2, class_name);
+				stmt.setString(3, class_term);
+				stmt.setString(4, class_section);
+				stmt.executeUpdate();
 
-				try(ResultSet rs = stmt.getGeneratedKeys()) {
-					if(rs.next()) {
-						class_id= rs.getInt(1);
-						System.out.println("class id " + class_id + "class course"+class_course);
-					} else {
-						System.err.println("Did not get any class id");
-					}
-				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -62,7 +53,7 @@ public static void createClass(String class_course, String class_name, String cl
 
 	}
 
-	public static void addAssignment() {
+	public static void addAssignment( String name, String Category, String Description, int points) {
 
 	}
 
@@ -503,9 +494,12 @@ public static void createClass(String class_course, String class_name, String cl
 			case "show-assignment":
 				showAssignment();
 			case "add-assignment":
-				String category;
-				String description;
-				String points;
+				name = args[1];
+				String category = args[2];
+				String description = args[3];
+				int points = Integer.parseInt(args[4]);
+				addAssignment(name, category, description, points);
+				break;
 			case "add-student":
 				String username = args[1];
 				if(args.length == 2){
@@ -513,10 +507,10 @@ public static void createClass(String class_course, String class_name, String cl
 				}
 				if(args.length>2){
 					username = args[1];
-					int studentid = Integer.parseInt(args[2]);
+					int student_id = Integer.parseInt(args[2]);
 					String last = args[3];
 					String first = args[4];
-					addStudent_4(username, studentid, last, first);
+					addStudent_4(username, student_id, last, first);
 				}
 
 			case "show-students":
@@ -540,45 +534,6 @@ public static void createClass(String class_course, String class_name, String cl
 			case "gradebook":
 				gradeBook();
 				break;
-
-
-
-//		case "UpdateInventory":
-//			item_code = args[1];
-//			inventory_amount = Integer.parseInt(args[2]);
-//			tryToUpdateInventory(item_code, inventory_amount);
-//			break;
-//
-//		case "DeleteItem":
-//			item_code = args[1];
-//			tryToDeleteItem(item_code);
-//		case "GetItems":
-//			item_code = args[1];
-//			tryToGetItems(item_code);
-//			break;
-//
-//		case "CreateOrder":
-//			item_code = args[1];
-//			quantity = Integer.parseInt(args[2]);
-//			tryToCreateNewOrder(item_code, quantity);
-//			break;
-//
-//		case "DeletOrder":
-//			item_code = args[1];
-//			tryToDeleteOrder(item_code);
-//			break;
-//
-//		case "GetOrders":
-//			item_code = args[1];
-//			tryToGetOrders(item_code);
-//			break;
-//		case "GetOrderDetails":
-//			if (args[1].equals("%")) {
-//				tryToGetOrderDetails();
-//			} else {
-//				tryToGetOrderDetails(Integer.parseInt(args[1]));
-//			}
-//			break;
 			default:
 				System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
 						+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
