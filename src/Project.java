@@ -67,7 +67,7 @@ public static void createClass(String class_course, String class_name, String cl
 	public static void showStudents() {
 		//Show all students in the current class
 	}
-	public static void showStudentsString() {
+	public static void showStudentsString(String string) {
 		//Show students with 'string' in their name or username (NOT case-sensitive)
 
 	}
@@ -519,7 +519,7 @@ public static void createClass(String class_course, String class_name, String cl
 				}
 				if(args.length >1){
 					String string = args[1];
-					showStudentsString();
+					showStudentsString(string);
 				}
 				break;
 			case "grade":
