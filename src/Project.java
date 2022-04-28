@@ -29,24 +29,85 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
-	public static void selectClass_1(String class_course) {
+	public static void listClasses() throws SQLException {
+		PreparedStatement stmt;
 
+		try {
+//			stmt = conn.prepareStatement("select class.*, count(enroll.student_id) as total_num_of_students\n" +
+//					"from class\n" +
+//					"join enroll on class.class_id = enroll.class_id\n" +
+//					"group by class.class_id;");
+			stmt = conn.prepareStatement("select * from class;");
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
+	//Returns the most recent class course but if there's multiple sections of the same class, it will fail
+	public static void selectClass_1(String class_course) throws SQLException {
+	PreparedStatement stmt;
+	try {
+		stmt = conn.prepareStatement("select * from class where class_course = ?;");
+		stmt.setString(1, class_course);
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+		}
+	}catch (SQLException e) {
+		e.printStackTrace();
+	}
+	}
+
+	//Returns the most recent class course but if there's multiple sections of the same class, it will fail
 	public static void selectClass_2(String class_course, String class_term) {
-
-
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("select * from class where class_course = ? and class_term = ?;");
+			stmt.setString(1, class_course);
+			stmt.setString(2, class_term);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	public static void selectClass_3(String class_course, String class_term, String class_section) {
-
-
+	public static void selectClass_3(String class_course, String class_term, String class_section) throws SQLException {
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("select * from class where class_course = ? and class_term = ? and class_section = ?;");
+			stmt.setString(1, class_course);
+			stmt.setString(2, class_term);
+			stmt.setString(3, class_section);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-
-	public static void showCatagories() {
+	//Show the currently activated class
+	public static void showClass(){
+	PreparedStatement stmt;
+	try {
+		stmt = conn.prepareStatement("select * from class where class_id = ?;");
+	}catch (SQLException e) {
+		e.printStackTrace();
+	}
 
 	}
 
 	public static void addCatagories() {
+
+	}
+	public static void showCatagories() {
 
 	}
 
@@ -128,6 +189,9 @@ public static void createClass(String class_course, String class_name, String cl
 				String class_section = args[4];
 				createClass(class_course, class_name, class_term, class_section);
 				break;
+				case "list-classes":
+					listClasses();
+					break;
 			case "select-class":
 				if(args.length==2){
 					class_course = args[1];
