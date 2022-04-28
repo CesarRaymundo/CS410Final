@@ -1,6 +1,4 @@
 import java.sql.*;
-import java.util.List;
-import java.util.ArrayList;
 
 public class Project {
 
@@ -51,9 +49,11 @@ public static void createClass(String class_course, String class_name, String cl
 	//Returns the most recent class course but if there's multiple sections of the same class, it will fail
 	public static void selectClass_1(String class_course) throws SQLException {
 	PreparedStatement stmt;
+	String latest_class_term = getLatestTerm(class_course);
 	try {
-		stmt = conn.prepareStatement("select * from class where class_course = ?;");
+		stmt = conn.prepareStatement("select * from class where class_course = ? and class_term = ?;");
 		stmt.setString(1, class_course);
+		stmt.setString(2, latest_class_term);
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
@@ -93,6 +93,26 @@ public static void createClass(String class_course, String class_name, String cl
 			e.printStackTrace();
 		}
 	}
+
+	//Get the latest term of a class
+	public static String getLatestTerm(String course_number) throws SQLException {
+	PreparedStatement stmt;
+	String latest_class_term = "";
+	try {
+		stmt = conn.prepareStatement("select class_term from class where class_course = ? order by class_term desc limit 1;");
+		stmt.setString(1, course_number);
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			latest_class_term = rs.getString("class_term");
+
+		}
+	}catch (SQLException e) {
+		e.printStackTrace();
+
+	}
+		return latest_class_term;
+	}
+
 	//Show the currently activated class
 	public static void showClass(){
 	PreparedStatement stmt;
@@ -103,10 +123,18 @@ public static void createClass(String class_course, String class_name, String cl
 	}
 
 	}
-
-	public static void addCatagories() {
-
+	public static void addCatagory(String catagory_name, String catagory_weight) throws SQLException {
+			PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("insert into catagory (catagory_name, catagory_weight) values (?, ?);");
+			stmt.setString(1, catagory_name);
+			stmt.setString(2, catagory_weight);
+			stmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
+
 	public static void showCatagories() {
 
 	}
@@ -184,9 +212,9 @@ public static void createClass(String class_course, String class_name, String cl
 		switch (args[0]) {
 			case "new-class":
 				String class_course = args[1];
-				String class_name = args[2];
-				String class_term = args[3];
-				String class_section = args[4];
+				String class_term = args[2];
+				String class_section = args[3];
+				String class_name = args[4];
 				createClass(class_course, class_name, class_term, class_section);
 				break;
 				case "list-classes":
@@ -212,9 +240,10 @@ public static void createClass(String class_course, String class_name, String cl
 			case "show-catagories":
 				showCatagories();
 				break;
-			case "add-catagories":
-
-				addCatagories();
+			case "add-catagory":
+				String catagory_name = args[1];
+				String catagory_weight = args[2];
+				addCatagory(catagory_name,catagory_weight);
 				break;
 			case "add-category":
 				String name = args[1];
