@@ -523,9 +523,10 @@ public static void createClass(String class_course, String class_name, String cl
 				}
 				break;
 			case "grade":
-				String assignmentname = args[1];
+				String assignmentName = args[1];
 				username = args[2];
 				String grade = args[3];
+				grade(assignmentName, username, grade);
 				break;
 			case "student-grades":
 				username = args[1];
@@ -541,7 +542,6 @@ public static void createClass(String class_course, String class_name, String cl
 						+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
 						+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
 						+ "GetOrderDetails<order_id or % for all>");
-
 		}
 	}
 }
