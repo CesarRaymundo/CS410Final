@@ -74,8 +74,11 @@ public static void createClass(String class_course, String class_name, String cl
 			stmt.setString(1, class_course);
 			stmt.setString(2, class_term);
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
+			if(rs.next()) {
 				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+			if(rs.next()) {
+				System.out.println("**WARNING** there are multiple sections of the same class");
+			}
 			}
 		}catch (SQLException e) {
 			e.printStackTrace();
