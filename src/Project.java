@@ -49,25 +49,26 @@ public static void createClass(String class_course, String class_name, String cl
 
 	//Returns the most recent class course but if there's multiple sections of the same class, it will fail
 	public static void selectClass_1(String class_course) throws SQLException {
-	PreparedStatement stmt;
-	String latest_class_term = getLatestTerm(class_course);
-	try {
-		stmt = conn.prepareStatement("select * from class where class_course = ? and class_term = ?;");
-		stmt.setString(1, class_course);
-		stmt.setString(2, latest_class_term);
-		ResultSet rs = stmt.executeQuery();
-		if (rs.next()) {
-		 if(!rs.next()) {
-			 activatedClass = rs.getInt("class_id");
-//			 System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
-		 }
-		 else {
-			 System.out.println("Multiple sections of the same course found");
-		 }
+		PreparedStatement stmt;
+		String latest_class_term = getLatestTerm(class_course);
+		try {
+			stmt = conn.prepareStatement("select * from class where class_course = ? and class_term = ?;");
+			stmt.setString(1, class_course);
+			stmt.setString(2, latest_class_term);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				activatedClass = rs.getInt("class_id");
+				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+				if (rs.next() == true) {
+					System.out.println("There are multiple classes with the same course number. Please select the correct class.");
+				}
+			}
+			else {
+				System.out.println("There are no classes with the course number " + class_course);
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
 		}
-	}catch (SQLException e) {
-		e.printStackTrace();
-	}
 	}
 
 	//Returns the most recent class course but if there's multiple sections of the same class, it will fail
@@ -87,6 +88,9 @@ public static void createClass(String class_course, String class_name, String cl
 					System.out.println("Multiple sections of the same course found");
 				}
 			}
+			else{
+				System.out.println("There are no classes with the course number " + class_course + " and term " + class_term);
+			}
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -101,7 +105,10 @@ public static void createClass(String class_course, String class_name, String cl
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				activatedClass = rs.getInt("class_id");
-//				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+			}
+			if(!rs.next()) {
+				System.out.println("There are no classes with the course number " + class_course + " and term " + class_term + " and section " + class_section);
 			}
 		}catch (SQLException e) {
 			e.printStackTrace();
