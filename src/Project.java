@@ -225,6 +225,17 @@ public static void createClass(String class_course, String class_name, String cl
 
 	public static void showStudents() {
 		//Show all students in the current class
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("select class.*, student.*\n" +
+					"from class\n" +
+					"join enroll on class.class_id = enroll.class_id\n" +
+					"join student on enroll.student_id = student.student_id\n" +
+					"having class.class_id = 1;");//TODO
+			stmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	public static void showStudentsString(String string) {
 		//Show students with 'string' in their name or username (NOT case-sensitive)
