@@ -3,6 +3,7 @@ import java.sql.*;
 public class Project {
 
 	static Connection conn;
+	public static int activatedClass;
 
 
 public static void createClass(String class_course, String class_name, String class_term, String class_section) throws SQLException {
@@ -57,7 +58,8 @@ public static void createClass(String class_course, String class_name, String cl
 		ResultSet rs = stmt.executeQuery();
 		if (rs.next()) {
 		 if(!rs.next()) {
-			 System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+			 activatedClass = rs.getInt("class_id");
+//			 System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
 		 }
 		 else {
 			 System.out.println("Multiple sections of the same course found");
@@ -78,7 +80,8 @@ public static void createClass(String class_course, String class_name, String cl
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				if(!rs.next()) {
-					System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+					activatedClass = rs.getInt("class_id");
+//					System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
 				}
 				else {
 					System.out.println("Multiple sections of the same course found");
@@ -97,7 +100,8 @@ public static void createClass(String class_course, String class_name, String cl
 			stmt.setString(3, class_section);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+				activatedClass = rs.getInt("class_id");
+//				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
 			}
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -128,6 +132,7 @@ public static void createClass(String class_course, String class_name, String cl
 	PreparedStatement stmt;
 	try {
 		stmt = conn.prepareStatement("select * from class where class_id = ?;");
+		stmt.setInt(1, activatedClass);
 	}catch (SQLException e) {
 		e.printStackTrace();
 	}
