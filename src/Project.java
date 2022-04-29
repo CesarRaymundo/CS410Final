@@ -201,8 +201,8 @@ public static void createClass(String class_course, String class_name, String cl
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		boolean DEBUG = true;
-		String DBNAME = "school";
 		String PASSWD = "password123";
+		String DBNAME = "school";
 		int PORT = 50418;
 		String USER = "msandbox";
 
@@ -267,15 +267,11 @@ public static void createClass(String class_course, String class_name, String cl
 				String catagory_weight = args[2];
 				addCatagory(catagory_name,catagory_weight);
 				break;
-			case "add-category":
-				String name = args[1];
-				String weight = args[2];
-				break;
 			case "show-assignment":
 				showAssignment();
 				break;
 			case "add-assignment":
-				name = args[1];
+				String name = args[1];
 				String category = args[2];
 				String description = args[3];
 				int points = Integer.parseInt(args[4]);
