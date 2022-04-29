@@ -210,6 +210,16 @@ public static void createClass(String class_course, String class_name, String cl
 
 	}
 	public static void addStudent_1(String user_name) {
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("" +
+					"insert into student (user_name, first_name, last_name) " +
+					"value('phillipnewell', 'phillip', 'newell');");//TODO
+			stmt.setString(1, user_name);
+			stmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
