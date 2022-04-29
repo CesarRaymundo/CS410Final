@@ -175,6 +175,21 @@ public static void createClass(String class_course, String class_name, String cl
 	}
 
 	public static void addAssignment( String name, String Category, String Description, int points) {
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("" +
+					"insert into assignment(assign_name, class_id, category_id, assign_description, assign_value) " +
+					"value('hw1', 1, 1, 'cool database stuff', 80);\n" +
+					"insert into category(category_name) " +
+					"value('homework');");//TODO
+			stmt.setString(1, name);
+			stmt.setString(2, Category);
+			stmt.setString(1, Description);
+			stmt.setInt(2, points);
+			stmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -210,8 +225,8 @@ public static void createClass(String class_course, String class_name, String cl
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		boolean DEBUG = true;
-		String PASSWD = "password123";
 		String DBNAME = "school";
+		String PASSWD = "password123";
 		int PORT = 50418;
 		String USER = "msandbox";
 
