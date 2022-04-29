@@ -194,6 +194,19 @@ public static void createClass(String class_course, String class_name, String cl
 	}
 
 	public static void addStudent_4(String user_name, int student_id, String last, String first) {
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("" +
+					"insert into student (user_name, first_name, last_name) " +
+					"value('phillipnewell', 'phillip', 'newell');");//TODO
+			stmt.setString(1, user_name);
+			stmt.setInt(2, student_id);
+			stmt.setString(1, last);
+			stmt.setString(2, first);
+			stmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 	public static void addStudent_1(String user_name) {
