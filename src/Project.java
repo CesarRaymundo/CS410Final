@@ -162,7 +162,16 @@ public static void createClass(String class_course, String class_name, String cl
 	}
 
 	public static void showAssignment() {
-
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("select category.category_id, category.category_name, group_concat(assign_description), group_concat(assign_value)\n" +
+					"from category\n" +
+					"join assignment on category.category_id = assignment.category_id\n" +
+					"group by category.category_id;");
+			stmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void addAssignment( String name, String Category, String Description, int points) {
