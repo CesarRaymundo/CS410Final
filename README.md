@@ -1,4 +1,4 @@
-# BSU-HU-CS-310-Final-Project
+# CS410-Final-Project
 
 
 ## Setup
@@ -28,13 +28,30 @@ Steps For Connectivity Between Java Program and Database
 
 
 ## To Compile
-
+`javac Project.java`
+`java Project`
 
 
 ## To Run
-
-`java Project <command> <arguments>`
+`java Project, <command>, <arguments>`
 
 
 
 ## List of Commands
+`new-class, <course>, <term>, <section>, <name>`
+`list-classes`
+`select-class, <course>, <term>, <section>`
+`select-class, <class_course>`
+`select-class, <class_course>, <class_term>`
+`show-class`
+`show-categories`
+`add-category, <name>, <weight>`
+`show-assignment`
+`add-assignment, <name>, <category>, <description>, <points>`
+`add-student, <username>, <studentid>, <last>, <first>`
+`add-student, <username>`
+`show-students`
+`show-students, <string>`
+`grade, <assignmentName>, <username>, <grade>`
+`student-grades, <username>`
+`gradebook`
