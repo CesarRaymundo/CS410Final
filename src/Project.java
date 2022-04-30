@@ -282,18 +282,35 @@ public class Project {
 
 	}
 
+	/**
+	 * Add a new student to the database and enroll them in the active class
+	 * @param user_name Name of the user to be added to the class
+	 * @param student_id ID of the user to be added to the class
+	 * @param last Name of the user to be added to the class
+	 * @param first Name of the user to be added to the class
+	 * @throws SQLException
+	 */
 	public static void addStudent_4(String user_name, int student_id, String last, String first) {
+		//add-student username studentid Last First — adds a student and enrolls
+		//them in the current class. If the student already exists, enroll them in the class; if the
+		//name provided does not match their stored name, update the name but print a warning
+		//that the name is being changed.
 		PreparedStatement stmt;
 		PreparedStatement stmt2;
 		try {
-			stmt = conn.prepareStatement("" +
-					"insert into student (user_name, first_name, last_name) " +
-					"value('phillipnewell', 'phillip', 'newell');");//TODO
+
+			stmt = conn.prepareStatement("insert into student (user_name, student_id, first_name, last_name) values (?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, user_name);
 			stmt.setInt(2, student_id);
-			stmt.setString(1, last);
-			stmt.setString(2, first);
+			stmt.setString(3, first);
+			stmt.setString(4, last);
 			stmt.executeUpdate();
+			//enroll student in class
+			stmt2 = conn.prepareStatement("insert into enroll (student_id, class_id) values (?, ?);", Statement.RETURN_GENERATED_KEYS);
+			stmt2.setInt(1, student_id);
+			stmt2.setInt(2, activatedClass);
+			stmt2.executeUpdate();
+
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -301,17 +318,41 @@ public class Project {
 		}
 
 	}
+
+	/**
+	 * Enroll an already existing student in the active class
+	 * @param user_name
+	 */
 	public static void addStudent_1(String user_name) {
 		PreparedStatement stmt;
+		PreparedStatement stmt1;
+		PreparedStatement stmt2;
+		String first_name_from_username = null;
+		String last_name_from_username = null;
 		try {
+			stmt1 = conn.prepareStatement("select first_name from student where user_name = ?;");
+			stmt1.setString(1, user_name);
+			ResultSet rs = stmt1.executeQuery();
+			if (rs.next()) {
+				first_name_from_username = rs.getString("first_name");
+			}
+			stmt2 = conn.prepareStatement("select last_name from student where user_name = ?;");
+			stmt2.setString(1, user_name);
+			ResultSet rs2 = stmt2.executeQuery();
+			if (rs2.next()) {
+				last_name_from_username = rs2.getString("last_name");
+			}
 			stmt = conn.prepareStatement("" +
-					"insert into student (user_name, first_name, last_name) " +
-					"value('phillipnewell', 'phillip', 'newell');");//TODO
+					"insert into student (user_name, first_name, last_name) value(?, ?, ?);");
 			stmt.setString(1, user_name);
+			stmt.setString(2, first_name_from_username);
+			stmt.setString(3, last_name_from_username);
+
 			stmt.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 
 	}
 
@@ -333,6 +374,12 @@ public class Project {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 *This function maximized the use of LIKE query to search through select columns of student table
+	 * Adds the latest match to the stmt setString.
+	 * @param string
+	 */
 	public static void showStudentsString(String string) {
 		//Show students with 'string' in their name or username (NOT case-sensitive)
 		PreparedStatement stmt;
@@ -350,21 +397,55 @@ public class Project {
 		}
 	}
 
+	/**
+	 * We did not get a chance to get this far
+	 * @param assignmentName
+	 * @param userName
+	 * @param grade
+	 */
 	public static void grade(String assignmentName, String userName, String grade) {
 		//if student already has a grade for that assignment -- replace it
 		//If number of points exceed assignment config cap, print a warning w/ number of points configed
 	}
 
+	/**
+	 * We did not get a chance to get this far
+	 * @param username
+	 */
 	public static void studentGrades(String username) {
 		//group by category
 		//subtotal for each category
 		//overall grade in class
+
 	}
+
+	/**
+	 * We did not get a chance to get this far
+	 */
 	public static void gradeBook(){
 		//students with their total grades
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("" +
+					"select *\n" +
+					"from grade\n" +
+					"join enroll on grade.student_id = enroll.student_id\n" +
+					"where enroll.class_id = 1;");//TODO
+			stmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
+
+	/**
+	 * After cutting up the string array into multiple arguments of 1 or more
+	 * We can begin sending the user to right function
+	 * @param input
+	 * @throws SQLException
+	 */
 	public static void listOfFunctions(String [] input) throws SQLException {
-		switch (input[0]) {
+		switch (input[0]) {  //case depend on first argument
 			case "new-class":
 				String class_course = input[1];
 				String class_term = input[2];
@@ -376,7 +457,7 @@ public class Project {
 				listClasses();
 				break;
 			case "select-class":
-				if(input.length==2){
+				if(input.length==2){ //if user passes 2 arguments etc.
 					class_course = input[1];
 					selectClass_1(class_course);
 				}
@@ -486,8 +567,6 @@ public class Project {
 		int PORT = 50418;
 		String USER = "msandbox";
 
-		// Connection and statement vars.
-//		Connection conn = null;
 		Statement statement = null;
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		try {
@@ -512,24 +591,10 @@ public class Project {
 		String input = "";
 		while(!input.equals("exit")){
 			input = scanner.nextLine();
-			String [] inputArray = input.split(", ");
+			String [] inputArray = input.split(", "); //split command to seperate arguments using comma
 			listOfFunctions(inputArray);
 		}
 
-
-
-
-//		System.out.println("Welcome to the school database!");
-//		System.out.println("Please enter a command:");
-//		String input = scanner.nextLine();
-//		String [] input_array = input.split(" ");
-//		while(scanner.hasNextLine()){
-////			input = scanner.nextLine();
-//			listOfFunctions(input_array);
-//			if(input.equals("exit")){
-//						break;
-//					}
-//		}
 		scanner.close();
 	}
 
