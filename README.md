@@ -28,8 +28,8 @@ Steps For Connectivity Between Java Program and Database
 
 
 ## To Compile
-javac Project.java
-java Project
+- javac Project.java
+- java Project
 
 
 ## To Run
