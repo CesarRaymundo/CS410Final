@@ -1,4 +1,4 @@
-# BSU-HU-CS-310-Final-Project
+# CS410-Final-Project
 
 
 ## Setup
