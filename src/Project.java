@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Scanner;
 
 public class Project {
 
@@ -103,11 +104,11 @@ public static void createClass(String class_course, String class_name, String cl
 			stmt.setString(2, class_term);
 			stmt.setString(3, class_section);
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
+			if (rs.next()) {
 				activatedClass = rs.getInt("class_id");
 				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
 			}
-			if(!rs.next()) {
+			else {
 				System.out.println("There are no classes with the course number " + class_course + " and term " + class_term + " and section " + class_section);
 			}
 		}catch (SQLException e) {
@@ -140,6 +141,10 @@ public static void createClass(String class_course, String class_name, String cl
 	try {
 		stmt = conn.prepareStatement("select * from class where class_id = ?;");
 		stmt.setInt(1, activatedClass);
+		ResultSet rs = stmt.executeQuery();
+		if (rs.next()) {
+			System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+		}
 	}catch (SQLException e) {
 		e.printStackTrace();
 	}
@@ -255,7 +260,106 @@ public static void createClass(String class_course, String class_name, String cl
 	public static void gradeBook(){
 		//students with their total grades
 	}
+	public static void listOfFunctions(String [] input) throws SQLException {
+		switch (input[0]) {
+			case "new-class":
+				String class_course = input[1];
+				String class_term = input[2];
+				String class_section = input[3];
+				String class_name = input[4];
+				createClass(class_course, class_name, class_term, class_section);
+				break;
+			case "list-classes":
+				listClasses();
+				break;
+			case "select-class":
+				if(input.length==2){
+					class_course = input[1];
+					selectClass_1(class_course);
+				}
+				if(input.length==3){
+					class_course = input[1];
+					class_term = input[2];
+					selectClass_2(class_course,class_term);
+				}
+				if(input.length==4){
+					class_course = input[1];
+					class_term = input[2];
+					class_section = input[3];
+					selectClass_3(class_course,class_term,class_section);
+				}
+				break;
+			case "show-class":
+				showClass();
+				break;
+			case "show-catagories":
+				showCatagories();
+				break;
+			case "add-catagory":
+				String catagory_name = input[1];
+				String catagory_weight = input[2];
+				addCatagory(catagory_name,catagory_weight);
+				break;
+			case "show-assignment":
+				showAssignment();
+				break;
+			case "add-assignment":
+				String name = input[1];
+				String category = input[2];
+				String description = input[3];
+				int points = Integer.parseInt(input[4]);
+				addAssignment(name, category, description, points);
+				break;
+			case "add-student":
+				String username = input[1];
+				if(input.length == 2){
+					addStudent_1(username);
+				}
+				if(input.length>2){
+					username = input[1];
+					int student_id = Integer.parseInt(input[2]);
+					String last = input[3];
+					String first = input[4];
+					addStudent_4(username, student_id, last, first);
+				}
+				break;
 
+			case "show-students":
+				if(input.length == 1){
+					showStudents();
+				}
+				if(input.length >1){
+					String string = input[1];
+					showStudentsString(string);
+				}
+				break;
+			case "grade":
+				String assignmentName = input[1];
+				username = input[2];
+				String grade = input[3];
+				grade(assignmentName, username, grade);
+				break;
+			case "student-grades":
+				username = input[1];
+				studentGrades(username);
+				break;
+			case "gradebook":
+				gradeBook();
+				break;
+				case "exit":
+					System.exit(0);
+					break;
+			default:
+				System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
+						+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
+						+ "UpdateInventory<item_code> < inventory_amount>," + "\n" + "DeleteItem<item_code>," + "\n"
+						+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
+						+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
+						+ "GetOrderDetails<order_id or % for all>");
+		}
+		System.out.println("Please enter another command...");
+
+	}
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		boolean DEBUG = true;
@@ -282,103 +386,129 @@ public static void createClass(String class_course, String class_name, String cl
 			System.err.println("  ClassNotFoundException: " + e.getMessage());
 		}
 
-//		statement = conn.createStatement();
-//		String item_code;
-//		String description;
-//		Double price;
-//		int inventory_amount;
-//		int quantity;
 
-		switch (args[0]) {
-			case "new-class":
-				String class_course = args[1];
-				String class_term = args[2];
-				String class_section = args[3];
-				String class_name = args[4];
-				createClass(class_course, class_name, class_term, class_section);
-				break;
-				case "list-classes":
-					listClasses();
-					break;
-			case "select-class":
-				if(args.length==2){
-					class_course = args[1];
-					selectClass_1(class_course);
-				}
-				if(args.length==3){
-					class_course = args[1];
-					class_term = args[2];
-					selectClass_2(class_course,class_term);
-				}
-				if(args.length==4){
-					class_course = args[1];
-					class_term = args[2];
-					class_section = args[3];
-					selectClass_3(class_course,class_term,class_section);
-				}
-				break;
-			case "show-catagories":
-				showCatagories();
-				break;
-			case "add-catagory":
-				String catagory_name = args[1];
-				String catagory_weight = args[2];
-				addCatagory(catagory_name,catagory_weight);
-				break;
-			case "show-assignment":
-				showAssignment();
-				break;
-			case "add-assignment":
-				String name = args[1];
-				String category = args[2];
-				String description = args[3];
-				int points = Integer.parseInt(args[4]);
-				addAssignment(name, category, description, points);
-				break;
-			case "add-student":
-				String username = args[1];
-				if(args.length == 2){
-					addStudent_1(username);
-				}
-				if(args.length>2){
-					username = args[1];
-					int student_id = Integer.parseInt(args[2]);
-					String last = args[3];
-					String first = args[4];
-					addStudent_4(username, student_id, last, first);
-				}
-				break;
-
-			case "show-students":
-				if(args.length == 1){
-					showStudents();
-				}
-				if(args.length >1){
-					String string = args[1];
-					showStudentsString(string);
-				}
-				break;
-			case "grade":
-				String assignmentName = args[1];
-				username = args[2];
-				String grade = args[3];
-				grade(assignmentName, username, grade);
-				break;
-			case "student-grades":
-				username = args[1];
-				studentGrades(username);
-				break;
-			case "gradebook":
-				gradeBook();
-				break;
-			default:
-				System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
-						+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
-						+ "UpdateInventory<item_code> < inventory_amount>," + "\n" + "DeleteItem<item_code>," + "\n"
-						+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
-						+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
-						+ "GetOrderDetails<order_id or % for all>");
+		//use a scanner to get input from the user and call the listOfFunctions method
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Please enter a command:");
+		String input = "";
+		while(!input.equals("exit")){
+			input = scanner.nextLine();
+			String [] inputArray = input.split(" ");
+			listOfFunctions(inputArray);
 		}
+
+
+
+
+//		System.out.println("Welcome to the school database!");
+//		System.out.println("Please enter a command:");
+//		String input = scanner.nextLine();
+//		String [] input_array = input.split(" ");
+//		while(scanner.hasNextLine()){
+////			input = scanner.nextLine();
+//			listOfFunctions(input_array);
+//			if(input.equals("exit")){
+//						break;
+//					}
+//		}
+		scanner.close();
+
+
+
+//		switch (args[0]) {
+//			case "new-class":
+//				String class_course = args[1];
+//				String class_term = args[2];
+//				String class_section = args[3];
+//				String class_name = args[4];
+//				createClass(class_course, class_name, class_term, class_section);
+//				break;
+//				case "list-classes":
+//					listClasses();
+//					break;
+//			case "select-class":
+//				if(args.length==2){
+//					class_course = args[1];
+//					selectClass_1(class_course);
+//				}
+//				if(args.length==3){
+//					class_course = args[1];
+//					class_term = args[2];
+//					selectClass_2(class_course,class_term);
+//				}
+//				if(args.length==4){
+//					class_course = args[1];
+//					class_term = args[2];
+//					class_section = args[3];
+//					selectClass_3(class_course,class_term,class_section);
+//				}
+//				break;
+//			case "show-class":
+//				showClass();
+//				break;
+//			case "show-catagories":
+//				showCatagories();
+//				break;
+//			case "add-catagory":
+//				String catagory_name = args[1];
+//				String catagory_weight = args[2];
+//				addCatagory(catagory_name,catagory_weight);
+//				break;
+//			case "show-assignment":
+//				showAssignment();
+//				break;
+//			case "add-assignment":
+//				String name = args[1];
+//				String category = args[2];
+//				String description = args[3];
+//				int points = Integer.parseInt(args[4]);
+//				addAssignment(name, category, description, points);
+//				break;
+//			case "add-student":
+//				String username = args[1];
+//				if(args.length == 2){
+//					addStudent_1(username);
+//				}
+//				if(args.length>2){
+//					username = args[1];
+//					int student_id = Integer.parseInt(args[2]);
+//					String last = args[3];
+//					String first = args[4];
+//					addStudent_4(username, student_id, last, first);
+//				}
+//				break;
+//
+//			case "show-students":
+//				if(args.length == 1){
+//					showStudents();
+//				}
+//				if(args.length >1){
+//					String string = args[1];
+//					showStudentsString(string);
+//				}
+//				break;
+//			case "grade":
+//				String assignmentName = args[1];
+//				username = args[2];
+//				String grade = args[3];
+//				grade(assignmentName, username, grade);
+//				break;
+//			case "student-grades":
+//				username = args[1];
+//				studentGrades(username);
+//				break;
+//			case "gradebook":
+//				gradeBook();
+//				break;
+//			default:
+//				System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
+//						+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
+//						+ "UpdateInventory<item_code> < inventory_amount>," + "\n" + "DeleteItem<item_code>," + "\n"
+//						+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
+//						+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
+//						+ "GetOrderDetails<order_id or % for all>");
+//		}
 	}
+
 }
 
