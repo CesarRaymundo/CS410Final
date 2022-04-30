@@ -495,7 +495,7 @@ public class Project {
 				String description = input[3];
 				int points = Integer.parseInt(input[4]);
 				addAssignment(name, category, description, points);
-				break;
+ 				break;
 			case "add-student":
 				String username = input[1];
 				if(input.length == 2){
