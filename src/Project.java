@@ -232,12 +232,14 @@ public class Project {
 	 */
 	public static void showAssignment() throws SQLException {
 		PreparedStatement stmt;
+		//show all assignments in the active class grouped by category
 		try {
-			stmt = conn.prepareStatement("select category.category_id, category.category_name, group_concat(assign_description), group_concat(assign_value)\n" +
-					"from category\n" +
-					"join assignment on category.category_id = assignment.category_id\n" +
-					"group by category.category_id;");
-			stmt.executeUpdate();
+			stmt = conn.prepareStatement("select * from assignment where class_id = ? group by category_id;");
+			stmt.setInt(1, activatedClass);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				System.out.println(rs.getInt("assignment_id")+", "+ rs.getString("assignment_name") + ", " + rs.getString("assignment_weight") + ", " + rs.getString("assignment_due_date") + ", " + rs.getString("assignment_description"));
+			}
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
