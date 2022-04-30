@@ -150,20 +150,43 @@ public static void createClass(String class_course, String class_name, String cl
 	}
 
 	}
-	public static void addCatagory(String catagory_name, String catagory_weight) throws SQLException {
+
+	//add category to the activated class
+	public static void addCategory(String category_name, String category_weight) throws SQLException {
 			PreparedStatement stmt;
 		try {
-			stmt = conn.prepareStatement("insert into catagory (catagory_name, catagory_weight) values (?, ?);");
-			stmt.setString(1, catagory_name);
-			stmt.setString(2, catagory_weight);
+			stmt = conn.prepareStatement("insert into category (category_name, category_weight, class_id) values (?, ?, ?);");
+			stmt.setString(1, category_name);
+			stmt.setString(2, category_weight);
+			stmt.setInt(3, activatedClass);
 			stmt.executeUpdate();
+//			stmt = conn.prepareStatement("insert into category (category_name, category_weight) values (?, ?);", Statement.RETURN_GENERATED_KEYS);
+//			stmt.setString(1, category_name);
+//			stmt.setString(2, category_weight);
+//
+//			stmt.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			System.out.println("Category added: " + category_name + ", " + category_weight);
 		}
 	}
 
-	public static void showCatagories() {
+	public static void showCategories() {
+	PreparedStatement stmt;
+	try {
+		stmt = conn.prepareStatement("select * from category where class_id = ?;");
+		stmt.setInt(1, activatedClass);
+		ResultSet rs = stmt.executeQuery();
+		if (rs.next()) {
+			System.out.println(rs.getInt("category_id")+", "+ rs.getString("category_name") + ", " + rs.getString("category_weight"));
+		}else {
+			System.out.println("There are no categories in this class");
+		}
 
+	}catch (SQLException e) {
+		e.printStackTrace();
+	}
 	}
 
 	public static void showAssignment() {
@@ -179,21 +202,33 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
-	public static void addAssignment( String name, String Category, String Description, int points) {
+	public static void addAssignment( String name, String Category, String Description, int points) throws SQLException {
+//		add- assignment name Category Description points – add a new assignment
 		PreparedStatement stmt;
+		PreparedStatement stmt2;
+		int category_id = 0;
+
 		try {
-			stmt = conn.prepareStatement("" +
-					"insert into assignment(assign_name, class_id, category_id, assign_description, assign_value) " +
-					"value('hw1', 1, 1, 'cool database stuff', 80);\n" +
-					"insert into category(category_name) " +
-					"value('homework');");//TODO
-			stmt.setString(1, name);
-			stmt.setString(2, Category);
-			stmt.setString(1, Description);
-			stmt.setInt(2, points);
-			stmt.executeUpdate();
+			stmt = conn.prepareStatement("select category_id from category where category_name = ? and class_id = ?;");
+			stmt.setString(1, Category);
+			stmt.setInt(2, activatedClass);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				category_id = rs.getInt("category_id");
+			}
+
+			stmt2 = conn.prepareStatement("insert into assignment (assign_name, assign_description, assign_value, category_id,class_id) values (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+			stmt2.setString(1, name);
+			stmt2.setString(2, Description);
+			stmt2.setInt(3, points);
+			stmt2.setInt(4, category_id);
+			stmt2.setInt(5, activatedClass);
+			stmt2.executeUpdate();
+
 		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			System.out.println("Assignment added: " + name + ", " + Description + ", " + points);
 		}
 
 	}
@@ -292,13 +327,13 @@ public static void createClass(String class_course, String class_name, String cl
 			case "show-class":
 				showClass();
 				break;
-			case "show-catagories":
-				showCatagories();
+			case "show-categories":
+				showCategories();
 				break;
-			case "add-catagory":
-				String catagory_name = input[1];
-				String catagory_weight = input[2];
-				addCatagory(catagory_name,catagory_weight);
+			case "add-category":
+				String category_name = input[1];
+				String category_weight = input[2];
+				addCategory(category_name,category_weight);
 				break;
 			case "show-assignment":
 				showAssignment();
@@ -393,7 +428,7 @@ public static void createClass(String class_course, String class_name, String cl
 		String input = "";
 		while(!input.equals("exit")){
 			input = scanner.nextLine();
-			String [] inputArray = input.split(" ");
+			String [] inputArray = input.split(", ");
 			listOfFunctions(inputArray);
 		}
 
@@ -412,102 +447,6 @@ public static void createClass(String class_course, String class_name, String cl
 //					}
 //		}
 		scanner.close();
-
-
-
-//		switch (args[0]) {
-//			case "new-class":
-//				String class_course = args[1];
-//				String class_term = args[2];
-//				String class_section = args[3];
-//				String class_name = args[4];
-//				createClass(class_course, class_name, class_term, class_section);
-//				break;
-//				case "list-classes":
-//					listClasses();
-//					break;
-//			case "select-class":
-//				if(args.length==2){
-//					class_course = args[1];
-//					selectClass_1(class_course);
-//				}
-//				if(args.length==3){
-//					class_course = args[1];
-//					class_term = args[2];
-//					selectClass_2(class_course,class_term);
-//				}
-//				if(args.length==4){
-//					class_course = args[1];
-//					class_term = args[2];
-//					class_section = args[3];
-//					selectClass_3(class_course,class_term,class_section);
-//				}
-//				break;
-//			case "show-class":
-//				showClass();
-//				break;
-//			case "show-catagories":
-//				showCatagories();
-//				break;
-//			case "add-catagory":
-//				String catagory_name = args[1];
-//				String catagory_weight = args[2];
-//				addCatagory(catagory_name,catagory_weight);
-//				break;
-//			case "show-assignment":
-//				showAssignment();
-//				break;
-//			case "add-assignment":
-//				String name = args[1];
-//				String category = args[2];
-//				String description = args[3];
-//				int points = Integer.parseInt(args[4]);
-//				addAssignment(name, category, description, points);
-//				break;
-//			case "add-student":
-//				String username = args[1];
-//				if(args.length == 2){
-//					addStudent_1(username);
-//				}
-//				if(args.length>2){
-//					username = args[1];
-//					int student_id = Integer.parseInt(args[2]);
-//					String last = args[3];
-//					String first = args[4];
-//					addStudent_4(username, student_id, last, first);
-//				}
-//				break;
-//
-//			case "show-students":
-//				if(args.length == 1){
-//					showStudents();
-//				}
-//				if(args.length >1){
-//					String string = args[1];
-//					showStudentsString(string);
-//				}
-//				break;
-//			case "grade":
-//				String assignmentName = args[1];
-//				username = args[2];
-//				String grade = args[3];
-//				grade(assignmentName, username, grade);
-//				break;
-//			case "student-grades":
-//				username = args[1];
-//				studentGrades(username);
-//				break;
-//			case "gradebook":
-//				gradeBook();
-//				break;
-//			default:
-//				System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
-//						+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
-//						+ "UpdateInventory<item_code> < inventory_amount>," + "\n" + "DeleteItem<item_code>," + "\n"
-//						+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
-//						+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
-//						+ "GetOrderDetails<order_id or % for all>");
-//		}
 	}
 
 }
