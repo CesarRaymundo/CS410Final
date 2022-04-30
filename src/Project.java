@@ -6,8 +6,15 @@ public class Project {
 	static Connection conn;
 	public static int activatedClass;
 
-
-public static void createClass(String class_course, String class_name, String class_term, String class_section) throws SQLException {
+	/**
+	 * Creates a new class
+	 * @param class_course Course number of the class
+	 * @param class_name Name of the class
+	 * @param class_term Term of the class
+	 * @param class_section Section of the class
+	 * @throws SQLException
+	 */
+	public static void createClass(String class_course, String class_name, String class_term, String class_section) throws SQLException {
 	    PreparedStatement stmt;
 		conn.setAutoCommit(false);
 
@@ -29,18 +36,19 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
+	/**
+	 * Lists all classes and the students in each class
+	 * @throws SQLException
+	 */
 	public static void listClasses() throws SQLException {
 		PreparedStatement stmt;
 
 		try {
-//			stmt = conn.prepareStatement("select class.*, count(enroll.student_id) as total_num_of_students\n" +
-//					"from class\n" +
-//					"join enroll on class.class_id = enroll.class_id\n" +
-//					"group by class.class_id;");
-			stmt = conn.prepareStatement("select * from class;");
+			//list classes with the number of students enrolled in each class
+			stmt = conn.prepareStatement("select class_id, class_course, class_name, class_term, class_section, count(*) as num_students from class join enrollment on class.class_id = enroll.class_id group by class_id;");
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section"));
+				System.out.println(rs.getInt("class_id")+", "+ rs.getString("class_course") + ", " + rs.getString("class_name") + ", " + rs.getString("class_term") + ", " + rs.getString("class_section") + ", " + rs.getInt("num_students"));
 			}
 		}
 		catch (SQLException e) {
@@ -48,7 +56,11 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
-	//Returns the most recent class course but if there's multiple sections of the same class, it will fail
+	/**
+	 * Selects a class by class course
+	 * @param class_course Course number of the class
+	 * @throws SQLException
+	 */
 	public static void selectClass_1(String class_course) throws SQLException {
 		PreparedStatement stmt;
 		String latest_class_term = getLatestTerm(class_course);
@@ -72,7 +84,12 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
-	//Returns the most recent class course but if there's multiple sections of the same class, it will fail
+	/**
+	 * Selects a class by class_course and class_term
+	 * @param class_course Course number of the class
+	 * @param class_term Term of the class
+	 * @throws SQLException
+	 */
 	public static void selectClass_2(String class_course, String class_term) {
 		PreparedStatement stmt;
 		try {
@@ -96,6 +113,14 @@ public static void createClass(String class_course, String class_name, String cl
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Selects a class by class_course, class_term, and class_section
+	 * @param class_course Course number of the class
+	 * @param class_term Term of the class
+	 * @param class_section Section of the class
+	 * @throws SQLException
+	 */
 	public static void selectClass_3(String class_course, String class_term, String class_section) throws SQLException {
 		PreparedStatement stmt;
 		try {
@@ -116,7 +141,12 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
-	//Get the latest term of a class
+	/**
+	 * Gets the latest class term
+	 * @param course_number Course number of the class
+	 * @return Latest class term
+	 * @throws SQLException
+	 */
 	public static String getLatestTerm(String course_number) throws SQLException {
 	PreparedStatement stmt;
 	String latest_class_term = "";
@@ -135,7 +165,10 @@ public static void createClass(String class_course, String class_name, String cl
 		return latest_class_term;
 	}
 
-	//Show the currently activated class
+	/**
+	 * Shows the active class
+	 * @throws SQLException
+	 */
 	public static void showClass(){
 	PreparedStatement stmt;
 	try {
@@ -151,7 +184,12 @@ public static void createClass(String class_course, String class_name, String cl
 
 	}
 
-	//add category to the activated class
+	/**
+	 * Add a category to the active class
+	 * @param category_name Name of the category to be added to the class
+	 * @param category_weight Weight of the category to be added to the class
+	 * @throws SQLException
+	 */
 	public static void addCategory(String category_name, String category_weight) throws SQLException {
 			PreparedStatement stmt;
 		try {
@@ -160,11 +198,6 @@ public static void createClass(String class_course, String class_name, String cl
 			stmt.setString(2, category_weight);
 			stmt.setInt(3, activatedClass);
 			stmt.executeUpdate();
-//			stmt = conn.prepareStatement("insert into category (category_name, category_weight) values (?, ?);", Statement.RETURN_GENERATED_KEYS);
-//			stmt.setString(1, category_name);
-//			stmt.setString(2, category_weight);
-//
-//			stmt.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -172,7 +205,11 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
-	public static void showCategories() {
+	/**
+	 * Show all categories in the active class
+	 * @throws SQLException
+	 */
+	public static void showCategories() throws SQLException {
 	PreparedStatement stmt;
 	try {
 		stmt = conn.prepareStatement("select * from category where class_id = ?;");
@@ -189,7 +226,11 @@ public static void createClass(String class_course, String class_name, String cl
 	}
 	}
 
-	public static void showAssignment() {
+	/**
+	 * Show all assignments in the active class
+	 * @throws SQLException
+	 */
+	public static void showAssignment() throws SQLException {
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement("select category.category_id, category.category_name, group_concat(assign_description), group_concat(assign_value)\n" +
@@ -202,6 +243,14 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 	}
 
+	/**
+	 * Add an assignment to the active class
+	 * @param name Name of the assignment to be added to the class
+	 * @param Category Category of the assignment to be added to the class
+	 * @param Description Description of the assignment to be added to the class
+	 * @param points Points of the assignment to be added to the class
+	 * @throws SQLException
+	 */
 	public static void addAssignment( String name, String Category, String Description, int points) throws SQLException {
 //		add- assignment name Category Description points – add a new assignment
 		PreparedStatement stmt;
@@ -235,6 +284,7 @@ public static void createClass(String class_course, String class_name, String cl
 
 	public static void addStudent_4(String user_name, int student_id, String last, String first) {
 		PreparedStatement stmt;
+		PreparedStatement stmt2;
 		try {
 			stmt = conn.prepareStatement("" +
 					"insert into student (user_name, first_name, last_name) " +
@@ -246,6 +296,8 @@ public static void createClass(String class_course, String class_name, String cl
 			stmt.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			System.out.println("Student added to class: " + user_name + ", " + student_id + ", " + last + ", " + first);
 		}
 
 	}
@@ -263,23 +315,39 @@ public static void createClass(String class_course, String class_name, String cl
 
 	}
 
-	public static void showStudents() {
-		//Show all students in the current class
+	/**
+	 * Shows all the students in the active class
+	 *
+	 * @throws SQLException
+	 */
+	public static void showStudents() throws SQLException {
 		PreparedStatement stmt;
 		try {
-			stmt = conn.prepareStatement("select class.*, student.*\n" +
-					"from class\n" +
-					"join enroll on class.class_id = enroll.class_id\n" +
-					"join student on enroll.student_id = student.student_id\n" +
-					"having class.class_id = 1;");//TODO
-			stmt.executeUpdate();
+			stmt = conn.prepareStatement("select * from student where class_id = ?;");
+			stmt.setInt(1, activatedClass);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				System.out.println(rs.getString("user_name") + ", " + rs.getInt("student_id") + ", " + rs.getString("last_name") + ", " + rs.getString("first_name"));
+			}
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	public static void showStudentsString(String string) {
 		//Show students with 'string' in their name or username (NOT case-sensitive)
-
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement("select * from student where user_name like ? or first_name like ? or last_name like ?;");
+			stmt.setString(1, "%" + string + "%");
+			stmt.setString(2, "%" + string + "%");
+			stmt.setString(3, "%" + string + "%");
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				System.out.println(rs.getString("user_name") + ", " + rs.getInt("student_id") + ", " + rs.getString("last_name") + ", " + rs.getString("first_name"));
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void grade(String assignmentName, String userName, String grade) {
@@ -385,16 +453,31 @@ public static void createClass(String class_course, String class_name, String cl
 					System.exit(0);
 					break;
 			default:
-				System.out.println("Incorrect format..." + "\n" + "Valid commands:" + "\n"
-						+ "CreateItem<item_code> <ItemDescription> <Price> <inventory_amount>," + "\n"
-						+ "UpdateInventory<item_code> < inventory_amount>," + "\n" + "DeleteItem<item_code>," + "\n"
-						+ "GetItems<item_code or % for all>," + "\n" + "CreateOrder <item_code> <quantity>," + "\n"
-						+ "DeleteOrder<item_code>," + "\n" + "GetOrders<item_code or % for all>," + "\n"
-						+ "GetOrderDetails<order_id or % for all>");
+				System.out.println("Incorrect format..." + "\n"+ commands);
 		}
 		System.out.println("Please enter another command...");
 
 	}
+	static String commands = "Valid commands:" + "\n"
+			+"new-class, <course>, <term>, <section>, <name>" + "\n"
+			+"list-classes" + "\n"
+			+"select-class, <course>, <term>, <section>" + "\n"
+			+"select-class, <class_course>" + "\n"
+			+"select-class, <class_course>, <class_term>" + "\n"
+			+"show-class" + "\n"
+			+"show-categories" + "\n"
+			+"add-category, <name>, <weight>" + "\n"
+			+"show-assignment" + "\n"
+			+"add-assignment, <name>, <category>, <description>, <points>" + "\n"
+			+"add-student, <username>, <studentid>, <last>, <first>" + "\n"
+			+"add-student, <username>" + "\n"
+			+"show-students" + "\n"
+			+"show-students, <string>" + "\n"
+			+"grade, <assignmentName>, <username>, <grade>" + "\n"
+			+"student-grades, <username>" + "\n"
+			+"gradebook" + "\n"
+			+"exit";
+
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		boolean DEBUG = true;
@@ -422,8 +505,9 @@ public static void createClass(String class_course, String class_name, String cl
 		}
 
 
-		//use a scanner to get input from the user and call the listOfFunctions method
 		Scanner scanner = new Scanner(System.in);
+		System.out.println("Welcome to the Managing class database!");
+		System.out.println("List of the following commands are available:" +" \n" + commands + "\n" + "**Please note that the commands are case sensitive and need to entered as displayed**");
 		System.out.println("Please enter a command:");
 		String input = "";
 		while(!input.equals("exit")){
