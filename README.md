@@ -38,6 +38,7 @@ Steps For Connectivity Between Java Program and Database
 
 
 ## List of Commands
+`
 new-class, <course>, <term>, <section>, <name>
 list-classes
 select-class, <course>, <term>, <section>
@@ -55,3 +56,4 @@ show-students, <string>
 grade, <assignmentName>, <username>, <grade>
 student-grades, <username>
 gradebook
+`
